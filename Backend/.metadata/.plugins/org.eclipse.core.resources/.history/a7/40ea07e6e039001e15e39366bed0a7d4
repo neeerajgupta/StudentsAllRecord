@@ -1,0 +1,105 @@
+package com.security.configu;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.AuthorizeHttpRequestsDsl;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.security.filter.JwtAuthFilter;
+import com.security.services.JwtSErvices;
+
+@Configuration
+@EnableWebSecurity
+
+public class SecurityConfg {
+	
+	@Autowired
+	private JwtAuthFilter jwtAuthFilter;
+
+	// Authencation in DATABASE
+	@Bean
+	public UserDetailsService userdatilsservice() {
+		return new UserInfoUserDAtilsServices();
+	}
+
+// Authenaction INMemory
+//	@Bean
+//	public UserDetailsService userdatilsservice(PasswordEncoder encoder) {
+//
+//		UserDetails admin = User.withUsername("neeraj").password(encoder.encode("pwd1")).roles("ADMIN").build();
+//
+//		UserDetails user = User.withUsername("durga").password(encoder.encode("pwd2")).roles("USER").build();
+//
+//		return new InMemoryUserDetailsManager(admin, user);
+//
+//	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+
+	}
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//		http.cors().disable();
+		return http.csrf().disable()
+
+				.authorizeHttpRequests().requestMatchers("/welcome", "/adduser", "/authencation","/addstudent").permitAll()
+				.and().authorizeHttpRequests().requestMatchers( "/home").authenticated()
+				.and().authorizeHttpRequests().requestMatchers("/getuser").authenticated()
+				.and().authorizeHttpRequests().requestMatchers("/getall").authenticated()
+				.and().authorizeHttpRequests().requestMatchers("/admin").authenticated()
+				.and().authorizeHttpRequests().requestMatchers("/user").authenticated()
+//				.and().formLogin().and().build();
+				
+				.and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.authenticationProvider(authenticationProvider())
+				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+				.build();
+
+	}
+
+	
+	//database
+			@Bean
+			public AuthenticationProvider authenticationProvider() {
+				DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider();
+				authenticationProvider.setUserDetailsService(userdatilsservice());
+				authenticationProvider.setPasswordEncoder(passwordEncoder());
+				return authenticationProvider;
+			}
+
+		//jwttokens valaditationsa
+			
+			@Bean
+			public AuthenticationManager authenticationManager(AuthenticationConfiguration authconfig) throws Exception {
+			
+				return authconfig.getAuthenticationManager();
+			}
+			
+			
+			
+			
+			
+			
+			
+}

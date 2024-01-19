@@ -1,0 +1,66 @@
+package com.security.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.security.entity.UserInfo;
+import com.security.services.UserServices;
+
+@RestController
+public class SecurityTesting {
+
+	@GetMapping("/welcome")
+	public String getmsg() {
+		String msg = "welcome To Secourity MAnager";
+		return msg;
+	}
+
+	@GetMapping("/home")
+	public String home() {
+		String msg = "WELCOME TO HOME PAGE!!......  ";
+		return msg;
+
+	}
+
+	@GetMapping("/user")
+	@PreAuthorize("hasAuthority('ROLE_USER')")
+	public String geuser() {
+		String msg = "WELCOME TO USER PAGE!!......  ";
+		return msg;
+
+	}
+
+	@GetMapping("/admin")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	public String getadmin() {
+		String msg = "WELCOME TO ADMIN PAGE!!......  ";
+		return msg;
+
+	}
+	
+	
+	
+	@Autowired
+	private UserServices services;
+
+	@PostMapping("/adduser")
+	public String addnew(@RequestBody UserInfo userInfo) {
+		String addUser = services.addUser(userInfo);
+		return "Add Successfull" + userInfo;
+	}
+	
+	
+	@GetMapping("/getuser")
+	//@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	public List<UserInfo> getAllUser(){
+		return services.getAllUser();
+	}
+
+
+}

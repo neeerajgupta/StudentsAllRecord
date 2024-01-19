@@ -1,0 +1,58 @@
+package com.studentregistration.demo.services;
+
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.studentregistration.demo.entity.ImageData;
+import com.studentregistration.demo.reposotery.ImageRepo;
+import com.studentregistration.demo.utils.ImageUtils;
+
+@Service
+public class ImageService implements ImageDataService {
+
+	@Autowired
+	private ImageRepo imagerepo;
+
+	@Override
+	public String uploadImage(MultipartFile file) {
+
+		try {
+			 ImageData imageData ;
+				imageData = imagerepo.save(
+					
+						ImageData.builder()
+				        .name(file.getOriginalFilename())
+				        .type(file.getContentType())
+				        
+				     
+				       //.imagedata(file.getBytes()).build()
+		        .imagedata(ImageUtils.compressImage(file.getBytes())).build()
+				        );
+				if (imageData != null) {
+		            return "file uploaded successfully : " + file.getOriginalFilename();
+				}
+
+		} catch (Exception e) {
+			System.out.println("File not Uploaded");
+		}
+		return null;
+
+	}
+
+	public byte[] downloadImage(String fileName) {
+		Optional<ImageData> dbImageData = imagerepo.findByName(fileName);
+		byte[] images = ImageUtils.decompressImage(
+				dbImageData.get().getImagedata()
+				);
+		return images;
+	}
+
+	
+
+	
+}

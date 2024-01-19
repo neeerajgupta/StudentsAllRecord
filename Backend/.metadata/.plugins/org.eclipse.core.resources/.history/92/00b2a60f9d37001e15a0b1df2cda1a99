@@ -1,0 +1,28 @@
+package com.security.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.security.entity.StudentInfo;
+import com.security.repositery.StudentInfoRepo;
+
+public class StudentInfoImpl implements StudentInfoServices {
+	
+	
+	@Autowired
+	private StudentInfoRepo studentInfoRepo;
+
+	@Override
+	public List<StudentInfo> getAllStudent() {
+		List<StudentInfo> findAll = studentInfoRepo.findAll();
+		return findAll;
+	}
+
+	@Override
+	public String create(StudentInfo studentInfo) {
+		studentInfoRepo.save(studentInfo);
+		return "Add User";
+	}
+
+}

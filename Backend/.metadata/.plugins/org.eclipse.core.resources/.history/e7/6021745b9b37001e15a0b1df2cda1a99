@@ -1,0 +1,21 @@
+package com.security.services;
+
+import java.util.List;
+
+import com.security.entity.StudentInfo;
+
+public class StudentInfoImpl implements StudentInfoServices {
+
+	@Override
+	public List<StudentInfo> getAllStudent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String create(StudentInfo studentInfo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

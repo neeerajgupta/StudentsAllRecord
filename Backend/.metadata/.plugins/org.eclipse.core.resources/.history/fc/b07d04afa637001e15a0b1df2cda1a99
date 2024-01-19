@@ -1,0 +1,32 @@
+package com.security.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.security.entity.StudentInfo;
+import com.security.services.StudentInfoServices;
+
+@RestController
+public class StudentinfoController {
+	@Autowired
+	private StudentInfoServices studentInfoServices;
+	
+	@GetMapping("/getall")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	public List<StudentInfo> allStudent(){
+		return studentInfoServices.getAllStudent();
+	}
+	
+	@PostMapping("/addstudent")
+	public String addStudent(@RequestBody StudentInfo studentInfo) {
+		String create = studentInfoServices.create(studentInfo);
+		return studentInfo.getName()+"Add SuccessFull";
+	}
+
+}

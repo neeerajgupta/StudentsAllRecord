@@ -1,0 +1,15 @@
+package com.security.services;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.security.entity.StudentInfo;
+
+@Service
+public interface StudentInfoServices {
+
+	public List<StudentInfo> allStudent();
+	
+	public String create(StudentInfo studentInfo);
+}

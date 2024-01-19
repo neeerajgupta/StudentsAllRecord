@@ -1,0 +1,5 @@
+package com.studentregistration.demo.controller;
+
+public class ParkingController {
+
+}

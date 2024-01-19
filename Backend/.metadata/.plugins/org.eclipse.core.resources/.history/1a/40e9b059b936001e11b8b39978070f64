@@ -1,0 +1,27 @@
+package com.security.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.security.entity.UserInfo;
+import com.security.services.UserServices;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.model.LoggerModel;
+
+@RestController
+public class SecurityTesting {
+
+	@Autowired
+	private UserServices services;
+
+
+	public String addnew(@RequestBody UserInfo userInfo) {
+		String addUser = services.addUser(userInfo);
+		return addUser;
+	}
+
+}

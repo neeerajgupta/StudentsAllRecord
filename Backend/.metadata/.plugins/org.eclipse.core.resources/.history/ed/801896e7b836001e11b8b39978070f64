@@ -1,0 +1,29 @@
+package com.security.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.security.entity.UserInfo;
+import com.security.repositery.UserInfoRepo;
+
+@Service
+public class UserservicesImpl implements UserServices {
+	@Autowired
+	private UserInfoRepo userRepo;
+
+	@Override
+	public String addUser(UserInfo userinfo) {
+		userRepo.save(userinfo);
+		return "User Add Successfull";
+	}
+
+	@Override
+	public List<UserInfo> getAllUser() {
+		List<UserInfo> findAll = userRepo.findAll();
+		return findAll;
+	}
+	
+
+}
